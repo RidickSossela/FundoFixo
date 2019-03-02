@@ -45315,6 +45315,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     props: ['titulos', 'itens', 'ordem', 'ordemCol', 'criar', 'detalhe', 'editar', 'deletar', 'token', 'modal', 'pesquisa'],
     data: function data() {
         return {
+            valor: "",
             buscar: "",
             ordemAux: this.ordem || "asc",
             ordemAuxCol: this.ordemCol || 0
@@ -45485,7 +45486,9 @@ var render = function() {
             "tr",
             [
               _vm._l(item, function(i) {
-                return _c("td", [_vm._v(_vm._s(i))])
+                return _c("td", [
+                  _vm._v(_vm._s(_vm._f("formataData")(i, _vm.valor)))
+                ])
               }),
               _vm._v(" "),
               _vm.detalhe || _vm.editar || _vm.deletar
@@ -46020,14 +46023,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     props: ['tipo', 'nome', 'titulo', 'css', 'item', 'url'],
     methods: {
         preencheFormulario: function preencheFormulario() {
+            var _this = this;
 
-            /* axios.get(this.url + this.item.id).then(res => {
-                 console.log(res.data)
-                  this.$store.commit('setItem',res.data);
-             });
-            */
+            axios.get(this.url + this.item.id).then(function (res) {
+                _this.$store.commit('setItem', res.data);
+            });
 
-            this.$store.commit('setItem', this.item);
+            // this.$store.commit('setItem',this.item);
         }
     }
 });
@@ -46536,12 +46538,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['titulos', 'itens', 'ordem', 'ordemCol', 'criar', 'detalhe', 'editar', 'deletar', 'token', 'modal', 'pesquisa'],
+    props: ['titulos', 'itens', 'ordem', 'ordemcol', 'criar', 'detalhe', 'editar', 'deletar', 'token', 'modal', 'pesquisa'],
     data: function data() {
         return {
+            valor: "",
             buscar: "",
             ordemAux: this.ordem || "asc",
-            ordemAuxCol: this.ordemCol || 0
+            ordemAuxCol: this.ordemcol || 0
         };
     },
     methods: {
@@ -46574,26 +46577,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this = this;
 
             var ordem = this.ordemAux;
-            var ordemCol = this.ordemAuxCol;
+            var ordemcol = this.ordemAuxCol;
             ordem = ordem.toLowerCase();
-            ordemCol = parseInt(ordemCol);
+            ordemcol = parseInt(ordemcol);
 
             if (ordem == "asc") {
                 this.itens.sort(function (a, b) {
-                    if (Object.values(a)[ordemCol] > Object.values(b)[ordemCol]) {
+                    if (Object.values(a)[ordemcol] > Object.values(b)[ordemcol]) {
                         return 1;
                     }
-                    if (Object.values(a)[ordemCol] < Object.values(b)[ordemCol]) {
+                    if (Object.values(a)[ordemcol] < Object.values(b)[ordemcol]) {
                         return -1;
                     }
                     return 0;
                 });
             } else {
                 this.itens.sort(function (a, b) {
-                    if (Object.values(a)[ordemCol] < Object.values(b)[ordemCol]) {
+                    if (Object.values(a)[ordemcol] < Object.values(b)[ordemcol]) {
                         return 1;
                     }
-                    if (Object.values(a)[ordemCol] > Object.values(b)[ordemCol]) {
+                    if (Object.values(a)[ordemcol] > Object.values(b)[ordemcol]) {
                         return -1;
                     }
                     return 0;
@@ -46708,7 +46711,9 @@ var render = function() {
             "tr",
             [
               _vm._l(item, function(i) {
-                return _c("td", [_vm._v(_vm._s(i))])
+                return _c("td", [
+                  _vm._v(_vm._s(_vm._f("formataData")(i, _vm.valor)))
+                ])
               }),
               _vm._v(" "),
               _vm.detalhe || _vm.editar || _vm.deletar

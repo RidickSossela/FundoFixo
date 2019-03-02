@@ -29,7 +29,11 @@ Route::group(['middlewere' => 'auth'], function() {
     Route::resource('conta', 'ContasController');
     Route::resource('ccusto', 'CcustosController');
     Route::resource('fundofixo', 'FundofixosController');
+    Route::prefix('fundofixo')->group(function (){
+
+        Route::get('adiciona-item/{item}/', 'FundofixosController@adicionaItem')->name('fundofixo.adicionaItem');
     Route::resource('item', 'ItensController');
+    });
    // Route::get('item/{id}','ItensController@getnr')->name('getnr');
     
 });

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Conta extends Model
 {
     protected $fillable = [
-        'conta', 'descricao',
+        'codigo', 'descricao',
     ];
     
     protected $table = 'contas';

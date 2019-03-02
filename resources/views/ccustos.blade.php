@@ -40,7 +40,7 @@
         v-bind:titulos="['#', 'Codigo', 'Descrição']"
         v-bind:itens="{{json_encode($listaDados)}}"
         ordem="desc" ordemCol="0"
-        criar="#criar" detalhe="" editar="ccusto" deletar="ccusto/" token="{{ csrf_token() }}"
+        criar="#criar" detalhe="" editar="ccusto/" deletar="ccusto/" token="{{ csrf_token() }}"
         modal="sim"
         
         ></tabela-lista>   
@@ -52,8 +52,8 @@
 <modal nome="adicionar" titulo="Adicionar">
     <formulario id="formAdicionar" css="" action="{{route('ccusto.store')}}" method="post" enctype="" token="{{ csrf_token() }}">
         <div class="form-group">
-            <label for="ccusto">C.custo</label>
-            <input type="text" class="form-control" id="ccusto" name="ccusto" placeholder="ccusto" value="{{old('ccusto')}}">
+            <label for="codigo">Codigo</label>
+            <input type="text" class="form-control" id="codigo" name="codigo" placeholder="codigo" value="{{old('codigo')}}">
         </div>
         <div class="form-group">
             <label for="descricao">Descrição</label>
@@ -68,8 +68,8 @@
 <modal nome="editar" titulo="Editar">
     <formulario  id="formEditar" css="" v-bind:action="'ccusto/'+ $store.state.item.id" method="put"  token="{{ csrf_token() }}">
         <div class="form-group">
-            <label for="ccusto">C. Custo</label>
-            <input type="text" class="form-control" v-model="$store.state.item.ccusto" id="ccusto" name="ccusto" placeholder="ccusto">
+            <label for="codigo">Codigo</label>
+            <input type="text" class="form-control" v-model="$store.state.item.codigo" id="codigo" name="codigo" placeholder="codigo">
         </div>
         <div class="form-group">
             <label for="descricao">Descricao</label>

@@ -39,8 +39,8 @@
         <tabela-lista
         v-bind:titulos="['#', 'NR', 'Ano','Unidade']"
         v-bind:itens="{{json_encode($listaDados)}}"
-        ordem="desc" ordemCol="0"
-        criar="#criar" detalhe="fundofixo" editar="fundofixo" deletar="fundofixo/" token="{{ csrf_token() }}"
+        ordem="desc" ordem-col="0"
+        criar="#criar" detalhe="fundofixo/" editar="fundofixo/" deletar="" token="{{ csrf_token() }}"
         modal="sim"
         
         ></tabela-lista>   
@@ -74,6 +74,17 @@
     </formulario>
     <span slot="botoes">
         <button form="formEditar" class="btn btn-info">Atualizar</button>
+    </span>
+</modal>
+
+<modal nome="detalhe" titulo="Detalhe">
+    <div class="text-center">
+        <p> <h3> NR: @{{$store.state.item.nr}} - @{{$store.state.item.ano}}  </h3> </p>
+        <p> <h3> Periodo: @{{$store.state.item.periodoIni? $store.state.item.periodoIni +" a "+ $store.state.item.periodoFim : "Não definido"}} </h3> </p>
+        <p> <h3>Valor: @{{ $store.state.item.valorTotal || "Nao definido"}} </h3> </p>
+    </div>
+    <span slot="botoes">
+        <a v-bind:href="'fundofixo/adiciona-item/'+ $store.state.item.id" class="btn btn-info">Editar Itens</a>
     </span>
 </modal>
 @endsection

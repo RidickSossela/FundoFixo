@@ -26,9 +26,9 @@ class CreateFundofixosTable extends Migration
             $table->increments('id');
             $table->integer('nr');
             $table->smallInteger('ano');
-            $table->date('periodoIni');
-            $table->date('periodoFim');
-            $table->double('valorTotal');
+            $table->date('periodoIni')->nullable();
+            $table->date('periodoFim')->nullable();
+            $table->double('valorTotal')->nullable();
             $table->unsignedInteger('unidades_id');
 
             

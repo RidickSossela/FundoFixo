@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Ccusto extends Model
 {
     protected $fillable = [
-        'ccusto', 'descricao',
+        'codigo', 'descricao',
     ];
     
     protected $table = 'ccustos';

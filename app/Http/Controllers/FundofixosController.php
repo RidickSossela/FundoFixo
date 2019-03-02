@@ -12,6 +12,16 @@ use App\Ccusto;
 
 class FundofixosController extends Controller
 {
+     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -21,7 +31,7 @@ class FundofixosController extends Controller
     {
         $listaMigalhas = json_encode([
             ['titulo' => 'Home', 'url' => route('home')],
-            ['titulo' => 'Fundo Fixo']
+            ['titulo' => 'Fundo Fixo',]
         ]);
         $listaDados = DB::table('fundofixos')
                                 ->join('unidades', 'fundofixos.unidades_id', '=', 'unidades.id')
@@ -43,7 +53,7 @@ class FundofixosController extends Controller
         $data['ano'] =  date('Y');
         //Pega a unidade 1, pois so existe uma.
         $data['unidades_id'] = 1;
-        //dd($data);
+
         $validation = \Validator::make($data, [
             'nr' => 'required',
             'ano' => 'required',
@@ -52,12 +62,13 @@ class FundofixosController extends Controller
         if ($validation->fails()) {
             return redirect()->back()->withErrors($validation)->withInput();
         }
+        //verifica se não existe NR
         if (DB::table('fundofixos')->where('nr', $data['nr'])->count() ==0) {
             $res = Fundofixo::create($data);
 
             if ($res) {
                 $request->session()->flash('success', 'Fundo fixo adicionada com sucesso!');
-                return $this->show($res);
+                return $this->adicionaItem($res->id);
             } else {
                 $request->session()->flash('error', 'Erro ao adicionar Fundo fixo!');
             }
@@ -76,21 +87,22 @@ class FundofixosController extends Controller
      */
     public function show(Fundofixo $fundofixo)
     {
-        $listaMigalhas = json_encode([
-            ['titulo' => 'Home', 'url' => route('home')],
-            ['titulo' => 'Fundo Fixo'],
-            ['titulo' => 'itens']
-        ]);
-        $dadosNr = Fundofixo::buscaNr($fundofixo->id);
-    //Remover o id para não mostrar na tabela
-        $findofixos_id = $dadosNr['0']->id;
-        unset($dadosNr['0']->id);
+    /**
+     * Verifica se o periodo inicial ou final não é NULL
+     * Para que o metodo dateTime() não retor a data atual
+     * OBS. Caso parametro do metodo dateTime() seja null, retorna data atual
+     */
+        if( !empty($fundofixo->periodoIni) || !empty($fundofixo->periodoFim)){
 
-        $itens = Item::where('fundofixos_id','=',$fundofixo->id)->get();
-        $conta = Conta::get();
-        $ccusto = Ccusto::get();
-
-        return view('fundofixo.item.listar', compact('listaMigalhas', 'dadosNr','itens','conta','ccusto','findofixos_id'));
+            $dataIni = new \DateTime($fundofixo->periodoIni);
+            // dd( $dataIni);
+            $fundofixo->periodoIni = $dataIni->format('d/m/Y');
+            // dd($fundofixo);
+            $dataFim = new \DateTime($fundofixo->periodoFim);
+            $fundofixo->periodoFim = $dataFim->format('d/m/Y');
+            
+        }    
+        return $fundofixo;
     }
 
     /**
@@ -103,19 +115,25 @@ class FundofixosController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->all();
-        $validation = \Validator::make($data, [
-            'nr' => 'required',
-            'ano' => 'required'
-        ]);
-        if ($validation->fails()) {
-            return redirect()->back()->withError($validation)->withInput();
-        }
+     
+        if (DB::table('fundofixos')->where('nr', $data['nr'])->count() ==0){
 
-        $resul = Fundofixo::find($id)->update($data);
-        if ($resul) {
-            $request->session()->flash('success', 'Fundo fixo atualizada com sucesso!');
-        } else {
-            $request->session()->flash('error', 'Erro ao atualizar Fundo fixo!');
+            $validation = \Validator::make($data, [
+                'nr' => 'required',
+                'ano' => 'required'
+                ]);
+                if ($validation->fails()) {
+                    return redirect()->back()->withError($validation)->withInput();
+                }
+                
+                $resul = Fundofixo::find($id)->update($data);
+                if ($resul) {
+                    $request->session()->flash('success', 'Fundo fixo atualizada com sucesso!');
+                } else {
+                    $request->session()->flash('error', 'Erro ao atualizar Fundo fixo!');
+                }
+        }else{
+            $request->session()->flash('error', 'Esta NR ja existe!');
         }
         return redirect()->back();
     }
@@ -130,10 +148,62 @@ class FundofixosController extends Controller
     {
         $res = Fundofixo::find($id)->delete();
         if ($res) {
-            $request->session()->flash('success', 'Fundo Fixo apagad0 com sucesso!');
+            $request->session()->flash('success', 'Fundo Fixo apagado com sucesso!');
         } else {
             $request->session()->flash('error', 'Erro ao apagar Fundo Fixo!');
         }
         return redirect()->back();
     }
+
+    /**
+     * Redireciona para pagina de adicionar itens
+     */
+
+    public function adicionaItem($id)
+    {
+        $listaMigalhas = json_encode([
+            ['titulo' => 'Home', 'url' => route('home')],
+            ['titulo' => 'Fundo Fixo', 'url' => route('fundofixo.index')],
+            ['titulo' => 'Itens']
+        ]);
+        
+        //dd($dadosNr);
+        $dadosNr = Fundofixo::buscaNr($id);
+
+        //Remover o id para não mostrar na tabela
+        $findofixos_id = $dadosNr['0']->id;
+        unset($dadosNr['0']->id);
+
+        //Formatar valores em moeda $
+        foreach ($dadosNr as $value) {
+            $value->valorTotal =  substr_replace(number_format($value->valorTotal,2,",","."), "$ ",0,0 );
+        } 
+
+        
+        
+
+        $itens = DB::table('itens')->select(
+                                            'itens.id',
+                                            'data',
+                                            'contas.codigo as conta',
+                                           'ccustos.codigo as ccustos',
+                                            'notaFiscal',
+                                            'itens.descricao',
+                                            'valor'
+                                     )
+                                    ->join('contas', 'contas_id', '=', 'contas.id')
+                                    ->join('ccustos', 'ccustos_id', '=', 'ccustos.id')
+                                    ->where('fundofixos_id', '=', $id)
+                             ->get();
+    //Formatar valores em moeda $
+        foreach ($itens as $value) {
+            $value->valor =  substr_replace(number_format($value->valor,2,",","."), "$ ",0,0 );
+        } 
+        
+        $conta = Conta::get();
+        $ccusto = Ccusto::get();
+
+        return view('fundofixo.item.listar', compact('listaMigalhas', 'dadosNr', 'itens', 'conta', 'ccusto', 'findofixos_id'));
+    }
 }
+

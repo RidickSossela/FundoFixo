@@ -22,13 +22,12 @@
         methods:{
             preencheFormulario: function(){
                
-               /* axios.get(this.url + this.item.id).then(res => {
-                    console.log(res.data)
-                     this.$store.commit('setItem',res.data);
+              axios.get(this.url + this.item.id).then(res => {
+                  this.$store.commit('setItem',res.data);
                 });
-            */
            
-               this.$store.commit('setItem',this.item);
+           
+              // this.$store.commit('setItem',this.item);
             }
         }
     }

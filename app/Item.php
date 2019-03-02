@@ -13,7 +13,7 @@ class Item extends Model
     
     protected $table = 'itens';
     public $timestamps = false;
-    public $with = "unidade";
+    public $with = ['conta','ccusto'];
     
     
     public function fundofixo()
@@ -23,12 +23,12 @@ class Item extends Model
 
     public function ccusto()
     {
-        return $this->belongsTo('App\Ccusto');
+        return $this->belongsTo('App\Ccusto','ccustos_id');
     }
     
     public function conta()
     {
-        return $this->belongsTo('App\Conta');
+        return $this->belongsTo('App\Conta','contas_id');
     }
 
     public static function buscaItens($id){

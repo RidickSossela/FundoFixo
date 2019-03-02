@@ -34,21 +34,21 @@ class HomeController extends Controller
                     'titulo' => 'Contas',
                     'url' =>  route('conta.index'),
                     'cor' => 'orange',
-                    'icone' => 'ion ion-pie-graph'
+                    'icone' => 'icon ion-md-list'
         ];
         $caixaCcusto = [
             'qtd' => Ccusto::count(),
             'titulo' => 'C. Custos',
             'url' =>  route('ccusto.index'),
             'cor' => 'red',
-            'icone' => 'ion ion-pie-graph'
+            'icone' => 'icon ion-logo-buffer'
         ];
         $caixaFundofixo = [
             'qtd' => Fundofixo::count(),
             'titulo' => 'Fundo Fixo',
             'url' =>  route('fundofixo.index'),
             'cor' => 'green',
-            'icone' => 'ion ion-pie-graph'
+            'icone' => 'icon ion-md-filing'
         ];
         return view('home',compact('listaMigalhas','caixaConta','caixaCcusto','caixaFundofixo'));
     }

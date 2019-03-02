@@ -7,6 +7,16 @@ use Illuminate\Http\Request;
 
 class ContasController extends Controller
 {
+     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -33,7 +43,7 @@ class ContasController extends Controller
     {
         $data = $request->input();
         $validation = \Validator::make($data,[
-            'conta' => 'required',
+            'codigo' => 'required',
             'descricao' => 'required',
         ]);
         if ($validation->fails()) {
@@ -47,6 +57,11 @@ class ContasController extends Controller
          return redirect()->back();
     }
 
+    public function show($id){
+        
+        return Conta::findOrFail($id);
+    }
+
     /**
      * Update the specified resource in storage.
      *
@@ -58,14 +73,14 @@ class ContasController extends Controller
     {
         $data = $request->all();
         $validation = \Validator::make($data,[
-            'conta' => 'required',
+            'codigo' => 'required',
             'descricao' => 'required',
         ]);
         if ($validation->fails()) {
             return redirect()->back()->withErrors($validation)->withInput();
         }
         
-            $resul = Conta::find($id)->update($data);
+        $resul = Conta::find($id)->update($data);
         if($resul){
             $request->session()->flash('success', 'Conta atualizada com sucesso!');
         }

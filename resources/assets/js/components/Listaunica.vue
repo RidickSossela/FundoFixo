@@ -19,7 +19,7 @@
 
                 <tbody>
                     <tr  v-for="(item,index) in lista">
-                        <td v-for="i in item" >{{i}}</td>
+                        <td v-for="i in item" >{{i | formataData(valor) }}</td>
 
                         <td v-if="detalhe || editar || deletar">
                             <form v-bind:id="index" v-if="deletar && token" v-bind:action="deletar + item.id" method="POST">
@@ -62,12 +62,13 @@
 
 <script>
     export default {
-        props:['titulos','itens','ordem','ordemCol', 'criar','detalhe','editar','deletar','token','modal','pesquisa'],
+        props:['titulos','itens','ordem','ordemcol', 'criar','detalhe','editar','deletar','token','modal','pesquisa'],
         data:function(){
            return {
+               valor:"",
                buscar:"",
                ordemAux: this.ordem || "asc",
-               ordemAuxCol: this.ordemCol || 0
+               ordemAuxCol: this.ordemcol || 0
            }
        },
        methods:{
@@ -98,20 +99,20 @@
        computed:{
            lista:function(){
                let ordem = this.ordemAux;
-               let ordemCol = this.ordemAuxCol;
+               let ordemcol = this.ordemAuxCol;
                ordem = ordem.toLowerCase();
-               ordemCol = parseInt(ordemCol);
+               ordemcol = parseInt(ordemcol);
 
                 if(ordem == "asc"){
                    this.itens.sort(function(a,b){
-                   if(Object.values(a)[ordemCol] > Object.values(b)[ordemCol]){return 1;}
-                   if(Object.values(a)[ordemCol] < Object.values(b)[ordemCol]){return -1;}
+                   if(Object.values(a)[ordemcol] > Object.values(b)[ordemcol]){return 1;}
+                   if(Object.values(a)[ordemcol] < Object.values(b)[ordemcol]){return -1;}
                    return 0;
                 });
                 }else{
                    this.itens.sort(function(a,b){
-                   if(Object.values(a)[ordemCol] < Object.values(b)[ordemCol]){return 1;}
-                   if(Object.values(a)[ordemCol] > Object.values(b)[ordemCol]){return -1;}
+                   if(Object.values(a)[ordemcol] < Object.values(b)[ordemcol]){return 1;}
+                   if(Object.values(a)[ordemcol] > Object.values(b)[ordemcol]){return -1;}
                    return 0;
                });
                 }

@@ -6,7 +6,17 @@ use App\Ccusto;
 use Illuminate\Http\Request;
 
 class CcustosController extends Controller
-{
+{ 
+    /**
+    * Create a new controller instance.
+    *
+    * @return void
+    */
+   public function __construct()
+   {
+       $this->middleware('auth');
+   }
+
    /**
      * Display a listing of the resource.
      *
@@ -32,7 +42,7 @@ class CcustosController extends Controller
     {
         $data = $request->input();
         $validation = \Validator::make($data,[
-            'ccusto' => 'required',
+            'codigo' => 'required',
             'descricao' => 'required',
         ]);
         if ($validation->fails()) {
@@ -47,6 +57,11 @@ class CcustosController extends Controller
         }
          return redirect()->back();
     }
+    public function show($id){
+        
+        return Ccusto::findOrFail($id);
+    }
+
 
     /**
      * Update the specified resource in storage.
@@ -59,14 +74,16 @@ class CcustosController extends Controller
     {
         $data = $request->all();
         $validation = \Validator::make($data,[
-            'ccusto' => 'required',
+            'codigo' => 'required',
             'descricao' => 'required',
         ]);
         if ($validation->fails()) {
-            return redirect()->back()->withError($validation)->withInput();
+            return redirect()->back()->withErrors($validation)->withInput();
         }
         
-            $resul = Ccusto::find($id)->update($data);
+        
+             $resul = Ccusto::findOrFail($id)->update($data);
+
         if($resul){
             $request->session()->flash('success', 'Conta atualizada com sucesso!');
         }else{

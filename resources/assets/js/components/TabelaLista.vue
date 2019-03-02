@@ -18,8 +18,8 @@
                 </thead>
 
                 <tbody>
-                    <tr  v-for="(item,index) in lista">
-                        <td v-for="i in item" >{{i}}</td>
+                    <tr  v-for="(item,index) in lista" >
+                        <td v-for="i in item" >{{i | formataData(valor) }}</td>
 
                         <td v-if="detalhe || editar || deletar">
                             <form v-bind:id="index" v-if="deletar && token" v-bind:action="deletar + item.id" method="POST">
@@ -65,6 +65,7 @@
         props:['titulos','itens','ordem','ordemCol', 'criar','detalhe','editar','deletar','token','modal','pesquisa'],
         data:function(){
            return {
+               valor:"",
                buscar:"",
                ordemAux: this.ordem || "asc",
                ordemAuxCol: this.ordemCol || 0
