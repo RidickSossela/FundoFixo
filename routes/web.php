@@ -11,13 +11,11 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', 'HomeController@index')->name('home');
 
 Auth::routes();
 
@@ -26,15 +24,23 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group(['middlewere' => 'auth'], function() {
     
-    Route::resource('conta', 'ContasController');
-    Route::resource('ccusto', 'CcustosController');
-    Route::resource('fundofixo', 'FundofixosController');
-    Route::prefix('fundofixo')->group(function (){
+    Route::resource('conta', 'ContasController')->except([
+        'create','edit'
+    ]);
 
+    Route::resource('ccusto', 'CcustosController')->except([
+        'create','edit'
+    ]);
+
+    Route::resource('fundofixo', 'FundofixosController');
+
+    Route::prefix('fundofixo')->group(function (){
         Route::get('adiciona-item/{item}/', 'FundofixosController@adicionaItem')->name('fundofixo.adicionaItem');
-    Route::resource('item', 'ItensController');
+        Route::resource('item', 'ItensController')->except([
+            'index','create','edit'
+        ]);
+        Route::get('gerar-pdf/{fundofixo}', 'FundofixosController@gerarPdf')->name('gerarPdf');
     });
-   // Route::get('item/{id}','ItensController@getnr')->name('getnr');
     
 });
 

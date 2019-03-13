@@ -56,6 +56,8 @@
         pesquisa="sim" 
         ></listaunica>      
     </painel>
+    
+    <a href="{{route('gerarPdf',$findofixos_id)}}">Gerar PDF</a>
 </pagina>
 
 <modal nome="adicionar" titulo="Adicionar Item">

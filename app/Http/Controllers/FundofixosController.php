@@ -94,13 +94,8 @@ class FundofixosController extends Controller
      */
         if( !empty($fundofixo->periodoIni) || !empty($fundofixo->periodoFim)){
 
-            $dataIni = new \DateTime($fundofixo->periodoIni);
-            // dd( $dataIni);
-            $fundofixo->periodoIni = $dataIni->format('d/m/Y');
-            // dd($fundofixo);
-            $dataFim = new \DateTime($fundofixo->periodoFim);
-            $fundofixo->periodoFim = $dataFim->format('d/m/Y');
-            
+            $fundofixo->periodoIni = $this->converterData($fundofixo->periodoIni);
+            $fundofixo->periodoFim = $this->converterData($fundofixo->periodoFim);
         }    
         return $fundofixo;
     }
@@ -169,18 +164,13 @@ class FundofixosController extends Controller
         
         //dd($dadosNr);
         $dadosNr = Fundofixo::buscaNr($id);
-
+        
         //Remover o id para não mostrar na tabela
         $findofixos_id = $dadosNr['0']->id;
         unset($dadosNr['0']->id);
-
+        
         //Formatar valores em moeda $
-        foreach ($dadosNr as $value) {
-            $value->valorTotal =  substr_replace(number_format($value->valorTotal,2,",","."), "$ ",0,0 );
-        } 
-
-        
-        
+        $dadosNr['0']->valorTotal = $this->converterMoeda($dadosNr['0']->valorTotal); 
 
         $itens = DB::table('itens')->select(
                                             'itens.id',
@@ -195,15 +185,53 @@ class FundofixosController extends Controller
                                     ->join('ccustos', 'ccustos_id', '=', 'ccustos.id')
                                     ->where('fundofixos_id', '=', $id)
                              ->get();
-    //Formatar valores em moeda $
+    
         foreach ($itens as $value) {
-            $value->valor =  substr_replace(number_format($value->valor,2,",","."), "$ ",0,0 );
+            $value->valor =  $this->converterMoeda($value->valor);
         } 
         
         $conta = Conta::get();
         $ccusto = Ccusto::get();
 
         return view('fundofixo.item.listar', compact('listaMigalhas', 'dadosNr', 'itens', 'conta', 'ccusto', 'findofixos_id'));
+    }
+    /**
+     * Metodo para gerar PDF
+     */
+    public function gerarPdf(Fundofixo $fundofixo)
+    {
+          $itens = Item::where('fundofixos_id', $fundofixo->id)->orderBy('data','asc')->get();
+
+          foreach ($itens as $value) {
+              $value->data = $this->converterData($value->data);
+          }
+          foreach ($itens as $value) {
+            $value->valor =  $this->converterMoeda($value->valor);
+        } 
+        $fundofixo->valorTotal = $this->converterMoeda($fundofixo->valorTotal); 
+
+        $fundofixo->periodoIni = $this->converterData($fundofixo->periodoIni);
+        $fundofixo->periodoFim = $this->converterData($fundofixo->periodoFim);
+      
+    return \PDF::loadView('fundoFixo/pdf', compact('fundofixo', 'itens'))
+                ->setPaper('a4', 'portrait')
+                ->stream('nome-arquivo-pdf-gerado.pdf');
+    }
+
+    /**
+     * Metodo para coverte data
+     */
+    public function converterData($date){
+        $newDate = new \DateTime($date);
+        return $newDate->format('d/m/Y');
+    }
+
+    /**
+     * Coverter para real
+     */
+    public function converterMoeda($valor){
+        return $valor =  substr_replace(number_format($valor,2,",","."), "R$ ",0,0 );  
+
     }
 }
 
