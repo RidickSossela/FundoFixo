@@ -6,22 +6,22 @@ use App\Ccusto;
 use Illuminate\Http\Request;
 
 class CcustosController extends Controller
-{ 
+{
     /**
     * Create a new controller instance.
     *
     * @return void
     */
-   public function __construct()
-   {
-       $this->middleware('auth');
-   }
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
-   /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    /**
+      * Display a listing of the resource.
+      *
+      * @return \Illuminate\Http\Response
+      */
     public function index()
     {
         $listaMigalhas = json_encode([
@@ -29,7 +29,7 @@ class CcustosController extends Controller
             ['titulo' => 'C.Custos']
         ]);
         $listaDados = Ccusto::paginate(5);
-        return view('ccustos',compact('listaMigalhas','listaDados'));
+        return view('ccustos', compact('listaMigalhas', 'listaDados'));
     }
 
     /**
@@ -41,7 +41,7 @@ class CcustosController extends Controller
     public function store(Request $request)
     {
         $data = $request->input();
-        $validation = \Validator::make($data,[
+        $validation = \Validator::make($data, [
             'codigo' => 'required',
             'descricao' => 'required',
         ]);
@@ -50,15 +50,15 @@ class CcustosController extends Controller
         }
         
         $resul = Ccusto::create($data);
-        if($resul){
+        if ($resul) {
             $request->session()->flash('success', 'C.custo adicionada com sucesso!');
-        }else{
+        } else {
             $request->session()->flash('error', 'Erro ao adicionar C.custo!');
         }
-         return redirect()->back();
+        return redirect()->back();
     }
-    public function show($id){
-        
+    public function show($id)
+    {
         return Ccusto::findOrFail($id);
     }
 
@@ -73,7 +73,7 @@ class CcustosController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->all();
-        $validation = \Validator::make($data,[
+        $validation = \Validator::make($data, [
             'codigo' => 'required',
             'descricao' => 'required',
         ]);
@@ -82,14 +82,14 @@ class CcustosController extends Controller
         }
         
         
-             $resul = Ccusto::findOrFail($id)->update($data);
+        $resul = Ccusto::findOrFail($id)->update($data);
 
-        if($resul){
+        if ($resul) {
             $request->session()->flash('success', 'Conta atualizada com sucesso!');
-        }else{
+        } else {
             $request->session()->flash('error', 'Erro ao atualizar C.custo!');
         }
-            return redirect()->back();
+        return redirect()->back();
     }
        
     /**
@@ -101,9 +101,9 @@ class CcustosController extends Controller
     public function destroy(Request $request, $id)
     {
         $res = Ccusto::find($id)->delete();
-        if($res){
+        if ($res) {
             $request->session()->flash('success', 'Conta apagada com sucesso!');
-        }else{
+        } else {
             $request->session()->flash('error', 'Erro ao apagar conta!');
         }
         return redirect()->back();

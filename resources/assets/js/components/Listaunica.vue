@@ -2,7 +2,7 @@
     <div>
       <div class="form-inline">
             <a v-if="criar && !modal" v-bind:href="criar">Criar</a>
-            <modallink v-if="criar && modal" tipo="link" nome="adicionar" titulo="criar" css=""></modallink>
+            <modallink v-if="criar && modal" tipo="button" nome="adicionar" titulo="Adicionar" css="btn btn-success"></modallink>
             <div class="form-group pull-right">
                 <input v-if="pesquisa" type="search" class="form-control" placeholder="Buscar" v-model="buscar">
             </div>

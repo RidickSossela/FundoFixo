@@ -15,7 +15,7 @@
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-default navbar-static-top">
+        <nav class="navbar navbar-default navbar-static-top ">
             <div class="container">
                 <div class="navbar-header">
 
@@ -73,6 +73,17 @@
 
         @yield('content')
     </div>
+    <!-- Footer -->
+<footer class="page-footer font-small blue">
+
+  <!-- Copyright -->
+  <div class="footer-copyright text-center py-3">© 2019 Copyright:
+    <a href="#"> RDK System</a>
+  </div>
+  <!-- Copyright -->
+
+</footer
+<!-- Footer -->
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>

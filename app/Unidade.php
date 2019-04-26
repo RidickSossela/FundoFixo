@@ -14,5 +14,4 @@ class Unidade extends Model
     {
         return $this->hasMany('App\Fundofixo');
     }
-    
 }

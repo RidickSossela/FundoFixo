@@ -44,7 +44,6 @@
         pesquisa=""
         ></listaunica>  
     </painel>
- 
     <painel>
         
         <listaunica 
@@ -54,10 +53,23 @@
         criar="#criar" detalhe="" editar="../item/" deletar="../item/" token="{{ csrf_token() }}"
         modal="sim"
         pesquisa="sim" 
-        ></listaunica>      
-    </painel>
-    
-    <a href="{{route('gerarPdf',$findofixos_id)}}">Gerar PDF</a>
+        ></listaunica>   
+        
+       
+            <formulario  css="form-inline fa-pull-right" action="{{route('gerarPdf',$findofixos_id)}}" method="post" enctype="" token="{{ csrf_token() }}">   
+                    <div class="form-group">
+                        <label for="total">Total: {{$dadosNr['0']->valorTotal}}</label>
+                        <numero-extenso
+                            valor="{{$dadosNr['0']->valorTotal}}"
+                            id="total"
+                            name="total"
+                        ></numero-extenso>
+                        <button class="btn btn-success fa-pull-right">Finalizar</button>
+                    </div> 
+                
+                </formulario>  
+       
+    </painel>   
 </pagina>
 
 <modal nome="adicionar" titulo="Adicionar Item">
@@ -151,4 +163,7 @@
         <button form="formEditar" class="btn btn-info" >Atualizar</button>
     </span>
 </modal>
+    
+
+
 @endsection

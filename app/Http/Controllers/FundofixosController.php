@@ -12,11 +12,11 @@ use App\Ccusto;
 
 class FundofixosController extends Controller
 {
-     /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
+    /**
+    * Create a new controller instance.
+    *
+    * @return void
+    */
     public function __construct()
     {
         $this->middleware('auth');
@@ -33,10 +33,8 @@ class FundofixosController extends Controller
             ['titulo' => 'Home', 'url' => route('home')],
             ['titulo' => 'Fundo Fixo',]
         ]);
-        $listaDados = DB::table('fundofixos')
-                                ->join('unidades', 'fundofixos.unidades_id', '=', 'unidades.id')
-                                ->select('fundofixos.id', 'nr', 'ano', 'fazenda')
-                                ->paginate(8);
+        
+        $listaDados = Fundofixo::listarFundofixos();
        
         return view('fundofixo/index', compact('listaMigalhas', 'listaDados'));
     }
@@ -87,16 +85,15 @@ class FundofixosController extends Controller
      */
     public function show(Fundofixo $fundofixo)
     {
-    /**
-     * Verifica se o periodo inicial ou final não é NULL
-     * Para que o metodo dateTime() não retor a data atual
-     * OBS. Caso parametro do metodo dateTime() seja null, retorna data atual
-     */
-        if( !empty($fundofixo->periodoIni) || !empty($fundofixo->periodoFim)){
-
+        /**
+         * Verifica se o periodo inicial ou final não é NULL
+         * Para que o metodo dateTime() não retor a data atual
+         * OBS. Caso parametro do metodo dateTime() seja null, retorna data atual
+         */
+        if (!empty($fundofixo->periodoIni) || !empty($fundofixo->periodoFim)) {
             $fundofixo->periodoIni = $this->converterData($fundofixo->periodoIni);
             $fundofixo->periodoFim = $this->converterData($fundofixo->periodoFim);
-        }    
+        }
         return $fundofixo;
     }
 
@@ -111,23 +108,22 @@ class FundofixosController extends Controller
     {
         $data = $request->all();
      
-        if (DB::table('fundofixos')->where('nr', $data['nr'])->count() ==0){
-
+        if (DB::table('fundofixos')->where('nr', $data['nr'])->count() ==0) {
             $validation = \Validator::make($data, [
                 'nr' => 'required',
                 'ano' => 'required'
                 ]);
-                if ($validation->fails()) {
-                    return redirect()->back()->withError($validation)->withInput();
-                }
+            if ($validation->fails()) {
+                return redirect()->back()->withError($validation)->withInput();
+            }
                 
-                $resul = Fundofixo::find($id)->update($data);
-                if ($resul) {
-                    $request->session()->flash('success', 'Fundo fixo atualizada com sucesso!');
-                } else {
-                    $request->session()->flash('error', 'Erro ao atualizar Fundo fixo!');
-                }
-        }else{
+            $resul = Fundofixo::find($id)->update($data);
+            if ($resul) {
+                $request->session()->flash('success', 'Fundo fixo atualizada com sucesso!');
+            } else {
+                $request->session()->flash('error', 'Erro ao atualizar Fundo fixo!');
+            }
+        } else {
             $request->session()->flash('error', 'Esta NR ja existe!');
         }
         return redirect()->back();
@@ -162,7 +158,6 @@ class FundofixosController extends Controller
             ['titulo' => 'Itens']
         ]);
         
-        //dd($dadosNr);
         $dadosNr = Fundofixo::buscaNr($id);
         
         //Remover o id para não mostrar na tabela
@@ -170,58 +165,51 @@ class FundofixosController extends Controller
         unset($dadosNr['0']->id);
         
         //Formatar valores em moeda $
-        $dadosNr['0']->valorTotal = $this->converterMoeda($dadosNr['0']->valorTotal); 
+        $dadosNr['0']->valorTotal = $this->converterMoeda($dadosNr['0']->valorTotal);
 
-        $itens = DB::table('itens')->select(
-                                            'itens.id',
-                                            'data',
-                                            'contas.codigo as conta',
-                                           'ccustos.codigo as ccustos',
-                                            'notaFiscal',
-                                            'itens.descricao',
-                                            'valor'
-                                     )
-                                    ->join('contas', 'contas_id', '=', 'contas.id')
-                                    ->join('ccustos', 'ccustos_id', '=', 'ccustos.id')
-                                    ->where('fundofixos_id', '=', $id)
-                             ->get();
+        $itens = Item::listarItens($id);
     
         foreach ($itens as $value) {
             $value->valor =  $this->converterMoeda($value->valor);
-        } 
+        }
         
         $conta = Conta::get();
         $ccusto = Ccusto::get();
 
+        
         return view('fundofixo.item.listar', compact('listaMigalhas', 'dadosNr', 'itens', 'conta', 'ccusto', 'findofixos_id'));
     }
+    
     /**
      * Metodo para gerar PDF
      */
-    public function gerarPdf(Fundofixo $fundofixo)
+    public function gerarPdf(Fundofixo $fundofixo, Request $request)
     {
-          $itens = Item::where('fundofixos_id', $fundofixo->id)->orderBy('data','asc')->get();
-
-          foreach ($itens as $value) {
-              $value->data = $this->converterData($value->data);
-          }
-          foreach ($itens as $value) {
+        $itens = Item::where('fundofixos_id', $fundofixo->id)->orderBy('data', 'asc')->get();
+        
+        foreach ($itens as $value) {
+            $value->data = $this->converterData($value->data);
+        }
+        foreach ($itens as $value) {
             $value->valor =  $this->converterMoeda($value->valor);
-        } 
-        $fundofixo->valorTotal = $this->converterMoeda($fundofixo->valorTotal); 
+        }
 
+        $fundofixo->valorTotal = $this->converterMoeda($fundofixo->valorTotal);
         $fundofixo->periodoIni = $this->converterData($fundofixo->periodoIni);
         $fundofixo->periodoFim = $this->converterData($fundofixo->periodoFim);
-      
-    return \PDF::loadView('fundoFixo/pdf', compact('fundofixo', 'itens'))
-                ->setPaper('a4', 'portrait')
-                ->stream('nome-arquivo-pdf-gerado.pdf');
-    }
 
+        $totalExtenso = $request->input('total');
+        
+        return \PDF::loadView('fundoFixo/pdf', compact('fundofixo', 'itens', 'totalExtenso'))
+        ->setPaper('a4', 'portrait')
+        ->stream('nome-arquivo-pdf-gerado.pdf');
+    }
+    
     /**
      * Metodo para coverte data
      */
-    public function converterData($date){
+    public function converterData($date)
+    {
         $newDate = new \DateTime($date);
         return $newDate->format('d/m/Y');
     }
@@ -229,9 +217,9 @@ class FundofixosController extends Controller
     /**
      * Coverter para real
      */
-    public function converterMoeda($valor){
-        return $valor =  substr_replace(number_format($valor,2,",","."), "R$ ",0,0 );  
-
+    public function converterMoeda($valor)
+    {
+        return $valor =  substr_replace(number_format($valor, 2, ",", "."), "R$ ", 0, 0);
     }
+    
 }
-

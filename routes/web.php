@@ -22,8 +22,7 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 
-Route::group(['middlewere' => 'auth'], function() {
-    
+Route::group(['middlewere' => 'auth'], function () {
     Route::resource('conta', 'ContasController')->except([
         'create','edit'
     ]);
@@ -34,13 +33,11 @@ Route::group(['middlewere' => 'auth'], function() {
 
     Route::resource('fundofixo', 'FundofixosController');
 
-    Route::prefix('fundofixo')->group(function (){
+    Route::prefix('fundofixo')->group(function () {
         Route::get('adiciona-item/{item}/', 'FundofixosController@adicionaItem')->name('fundofixo.adicionaItem');
         Route::resource('item', 'ItensController')->except([
             'index','create','edit'
         ]);
-        Route::get('gerar-pdf/{fundofixo}', 'FundofixosController@gerarPdf')->name('gerarPdf');
+        Route::post('gerar-pdf/{fundofixo}', 'FundofixosController@gerarPdf')->name('gerarPdf');
     });
-    
 });
-

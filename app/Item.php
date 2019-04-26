@@ -23,21 +23,37 @@ class Item extends Model
 
     public function ccusto()
     {
-        return $this->belongsTo('App\Ccusto','ccustos_id');
+        return $this->belongsTo('App\Ccusto', 'ccustos_id');
     }
     
     public function conta()
     {
-        return $this->belongsTo('App\Conta','contas_id');
+        return $this->belongsTo('App\Conta', 'contas_id');
     }
 
-    public static function buscaItens($id){
+    public static function buscaItens($id)
+    {
         $data = DB::table('itens')
-                    ->where('fundofixos_id','=',$id)
+                    ->where('fundofixos_id', '=', $id)
                     ->paginate();
         return $data;
     }
-    
-    
-        
+    /**
+     * Busca todos os itnes de um determinado fundo fixo
+     */
+    public static function listarItens($fundofixo){
+        return DB::table('itens')->select(
+            'itens.id',
+            'data',
+            'contas.codigo as conta',
+            'ccustos.codigo as ccustos',
+            'notaFiscal',
+            'itens.descricao',
+            'valor' 
+                                     )
+                                    ->join('contas', 'contas_id', '=', 'contas.id')
+                                    ->join('ccustos', 'ccustos_id', '=', 'ccustos.id')
+                                    ->where('fundofixos_id', '=', $fundofixo)
+                             ->get();                    
+    }
 }

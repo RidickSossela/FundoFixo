@@ -11,8 +11,6 @@ window.Vue = require('vue');
 import Vuex from "Vuex";
 Vue.use(Vuex);
 
-
-
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -43,6 +41,7 @@ Vue.component('modallink', require('./components/modal/ModalLink.vue'));
 Vue.component('formulario', require('./components/Formulario.vue'));
 Vue.component('artigocard', require('./components/ArtigoCard.vue'));
 Vue.component('listaunica', require('./components/Listaunica.vue'));
+Vue.component('numero-extenso', require('./components/converterNumExtenso.vue'));
 
 const app = new Vue({
     el: '#app',

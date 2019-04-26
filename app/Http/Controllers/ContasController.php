@@ -7,11 +7,11 @@ use Illuminate\Http\Request;
 
 class ContasController extends Controller
 {
-     /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
+    /**
+    * Create a new controller instance.
+    *
+    * @return void
+    */
     public function __construct()
     {
         $this->middleware('auth');
@@ -30,7 +30,7 @@ class ContasController extends Controller
         ]);
         $listaDados = Conta::paginate(5);
   
-        return view('contas',compact('listaMigalhas','listaDados'));
+        return view('contas', compact('listaMigalhas', 'listaDados'));
     }
 
     /**
@@ -42,7 +42,7 @@ class ContasController extends Controller
     public function store(Request $request)
     {
         $data = $request->input();
-        $validation = \Validator::make($data,[
+        $validation = \Validator::make($data, [
             'codigo' => 'required',
             'descricao' => 'required',
         ]);
@@ -50,15 +50,15 @@ class ContasController extends Controller
             return redirect()->back()->withErrors($validation)->withInput();
         }
         
-            $resul = Conta::create($data);
-        if($resul){
+        $resul = Conta::create($data);
+        if ($resul) {
             $request->session()->flash('success', 'Conta adicionada com sucesso!');
         }
-         return redirect()->back();
+        return redirect()->back();
     }
 
-    public function show($id){
-        
+    public function show($id)
+    {
         return Conta::findOrFail($id);
     }
 
@@ -72,7 +72,7 @@ class ContasController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->all();
-        $validation = \Validator::make($data,[
+        $validation = \Validator::make($data, [
             'codigo' => 'required',
             'descricao' => 'required',
         ]);
@@ -81,10 +81,10 @@ class ContasController extends Controller
         }
         
         $resul = Conta::find($id)->update($data);
-        if($resul){
+        if ($resul) {
             $request->session()->flash('success', 'Conta atualizada com sucesso!');
         }
-            return redirect()->back();
+        return redirect()->back();
     }
        
     /**
@@ -96,9 +96,9 @@ class ContasController extends Controller
     public function destroy(Request $request, $id)
     {
         $res = Conta::find($id)->delete();
-        if($res){
+        if ($res) {
             $request->session()->flash('success', 'Conta apagada com sucesso!');
-        }else{
+        } else {
             $request->session()->flash('error', 'Erro ao apagar conta!');
         }
         return redirect()->back();

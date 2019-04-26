@@ -87,8 +87,8 @@ return [
     'unique'               => 'O campo :attribute já está sendo utilizado.',
     'uploaded'             => 'O campo :attribute falha no upload.',
     'url'                  => 'O campo :attribute tem um formato inválido.',
-    'dash'                 => 'O campo :attribute não pode ter traços.', 
-    'dash2'                => 'O campo :attribute não pode ter traços 2.', 
+    'dash'                 => 'O campo :attribute não pode ter traços.',
+    'dash2'                => 'O campo :attribute não pode ter traços 2.',
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines

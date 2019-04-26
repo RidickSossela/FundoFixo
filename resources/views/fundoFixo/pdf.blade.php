@@ -10,12 +10,12 @@
     <table>
         <tr>
             <td class="departamento" colspan="2"> Divisao Produtos Florestais</td>
-            <td class="fundo" colspan="3"> FUNDO FIXO </td> 
+            <td class="fundo" colspan="2"> FUNDO FIXO </td> 
             <td class="anexo" colspan="2"> ANEXO II </td> 
         </tr>
         
         <tr>
-            <td  colspan="7">
+            <td  colspan="6">
                 <div class="desc-nr">
                     <div> Prestação de contas nr.: {{$fundofixo->nr}} - {{$fundofixo->ano}}</div>
                     <div> Unidade:   {{$fundofixo->unidade->fazenda}} </div>
@@ -29,7 +29,7 @@
             <td class="titulo-itens">DATA</td>
             <td class="titulo-itens">CONTA</td>
             <td class="titulo-itens">C.CUSTO</td>
-            <td class="titulo-itens" colspan="3">DESCRIÇÃO DAS DESPESAS</td>
+            <td class="titulo-itens" colspan="2">DESCRIÇÃO DAS DESPESAS</td>
             <td class="titulo-itens">VALOR</td>
         </tr>
        
@@ -39,19 +39,30 @@
                 <td class="bordas text-center"> {{$item->data}} </td>
                 <td class="bordas text-center"> {{$item->conta->codigo}} </td>
                 <td class="bordas text-center"> {{$item->ccusto->codigo}} </td>
-                <td class="bordas text-justify" colspan="3" >NF. {{$item->notaFiscal}} - {{$item->descricao}} </td>
+                <td class="bordas" colspan="2" >NF. {{$item->notaFiscal}} - {{$item->descricao}} </td>
                 <td class="bordas valor">  {{$item->valor}} </td>
             </tr>
         @endforeach
+        
+        
+        @for ($l=0; count($itens)+$l < 20; $l++)    
+            <tr>
+                <td class="bordas">  &nbsp; </td>
+                <td class="bordas"> &nbsp; </td>
+                <td class="bordas"> &nbsp; </td>
+                <td class="bordas" colspan="2"> &nbsp; </td>
+                <td class="bordas valor"> &nbsp; </td>
+            </tr>
+        @endfor
         <tr>
-            <td class="border-bootom" colspan="7">&nbsp;</td>
+            <td class="border-bootom" colspan="6">&nbsp;</td>
         </tr>
 
         <tr>
-            <td class="sem_dir" rowspan="3">Obs.</td>
-            <td class="sem_esq" rowspan="3" colspan="4">descricao em texto</td>
+            <td class="sem_dir text-center" rowspan="3">Obs.</td>
+            <td class="sem_esq quebra-linha" rowspan="3" colspan="3"> {{@$totalExtenso}} </td>
             <td class="totals" >TOTAL DESPESAS</td>
-            <td class="totals">R$ {{$fundofixo->valorTotal}} </td>
+            <td class="totals"> {{$fundofixo->valorTotal}} </td>
         </tr>
         <tr>
             <td class="totals" >VALOR FUNDO FIXO</td>
@@ -59,18 +70,18 @@
         </tr>
         <tr>
             <td class="totals" >REEMBOLSO</td>
-            <td class="totals"> R$ {{$fundofixo->valorTotal}} </td>
+            <td class="totals"> {{$fundofixo->valorTotal}} </td>
         </tr>
 
         <tr>
             <td class="bordas text-center" colspan="3">FUNCIONARIO</td>
-            <td class="bordas text-center" colspan="2">CAP</td>
+            <td class="bordas text-center" colspan="1">CAP</td>
             <td class="bordas text-center">CONFERENCIA</td>
             <td class="bordas text-center">APROVAÇÃO</td>
         </tr>
         <tr>
             <td class="bordas" colspan="3">&nbsp;</td>
-            <td class="bordas" colspan="2">&nbsp;</td>
+            <td class="bordas" colspan="1">&nbsp;</td>
             <td class="bordas">&nbsp;</td>
             <td class="bordas">&nbsp;</td>
         </tr>
@@ -87,11 +98,9 @@
         border-collapse: collapse;  
         border: 2px solid black;
         width: 100%;
-        margin: auto;
     }
-    td{
-        width:auto;
-        padding-left: 2px;
+    table tr td {
+        width: auto;
     }
     .fundo{
         font-size:20px;
@@ -164,6 +173,9 @@
     .border-bootom{
         border-top:1px solid black;
         border-bottom:2px solid black;
+    }
+    .quebra-linha{
+        white-space: brak-word;
     }
 
 </style>

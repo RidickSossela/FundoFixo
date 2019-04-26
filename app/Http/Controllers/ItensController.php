@@ -7,11 +7,11 @@ use Illuminate\Http\Request;
 
 class ItensController extends Controller
 {
-     /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
+    /**
+    * Create a new controller instance.
+    *
+    * @return void
+    */
     public function __construct()
     {
         $this->middleware('auth');
@@ -25,7 +25,7 @@ class ItensController extends Controller
      */
     public function store(Request $request)
     {
-       $validation = \Validator::make($request->input(),[
+        $validation = \Validator::make($request->input(), [
             'data' => 'required',
             'notaFiscal' => 'required',
             'descricao' => 'required',
@@ -34,16 +34,15 @@ class ItensController extends Controller
             'contas_id' => 'required',
             'ccustos_id' => 'required',
        ]);
-       if($validation->fails()){
-           return redirect()->route('fundofixo.adicionaItem',$request->input('fundoFixos_id'))->withErrors($validation)->withInput();
-       }
-       if(Item::create($request->input())){
-           $request->session()->flash('success','Item adicionado!');
-       }else{
-           $request->session()->flash('error', 'Erro ao adicionar item!');
-       }
-       return redirect()->route('fundofixo.adicionaItem',$request->input('fundoFixos_id'));
-        
+        if ($validation->fails()) {
+            return redirect()->route('fundofixo.adicionaItem', $request->input('fundoFixos_id'))->withErrors($validation)->withInput();
+        }
+        if (Item::create($request->input())) {
+            $request->session()->flash('success', 'Item adicionado!');
+        } else {
+            $request->session()->flash('error', 'Erro ao adicionar item!');
+        }
+        return redirect()->route('fundofixo.adicionaItem', $request->input('fundoFixos_id'));
     }
 
     /**
@@ -66,7 +65,7 @@ class ItensController extends Controller
      */
     public function update(Request $request, Item $item)
     {
-        $validation = \Validator::make($request->input(),[
+        $validation = \Validator::make($request->input(), [
             'id' => 'required',
             'data' => 'required',
             'notaFiscal' => 'required',
@@ -76,16 +75,15 @@ class ItensController extends Controller
             'contas_id' => 'required',
             'ccustos_id' => 'required',
        ]);
-       if($validation->fails()){
-           return redirect()->route('fundofixo.adicionaItem',$request->input('fundoFixos_id'))->withErrors($validation)->withInput();
-       }
-       if(Item::find($item->id)->update($request->input())){
-           $request->session()->flash('success','Item atualizado com sucesso!');
-       }else{
-           $request->session()->flash('error', 'Erro ao atualizar item!');
-       }
-       return redirect()->route('fundofixo.adicionaItem',$request->input('fundoFixos_id'));
-        
+        if ($validation->fails()) {
+            return redirect()->route('fundofixo.adicionaItem', $request->input('fundoFixos_id'))->withErrors($validation)->withInput();
+        }
+        if (Item::find($item->id)->update($request->input())) {
+            $request->session()->flash('success', 'Item atualizado com sucesso!');
+        } else {
+            $request->session()->flash('error', 'Erro ao atualizar item!');
+        }
+        return redirect()->route('fundofixo.adicionaItem', $request->input('fundoFixos_id'));
     }
     
 
@@ -103,7 +101,7 @@ class ItensController extends Controller
                 $request->session()->flash('success', 'Item apagado com sucesso!');
             } else {
                 $request->session()->flash('error', 'Erro ao apagar item!');
-            }   
+            }
             return redirect()->back();
         }
     }

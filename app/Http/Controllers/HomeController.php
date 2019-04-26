@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Conta;
 use App\Ccusto;
 use App\Fundofixo;
+
 class HomeController extends Controller
 {
     /**
@@ -50,6 +51,6 @@ class HomeController extends Controller
             'cor' => 'green',
             'icone' => 'icon ion-md-filing'
         ];
-        return view('home',compact('listaMigalhas','caixaConta','caixaCcusto','caixaFundofixo'));
+        return view('home', compact('listaMigalhas', 'caixaConta', 'caixaCcusto', 'caixaFundofixo'));
     }
 }

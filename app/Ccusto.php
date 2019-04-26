@@ -18,5 +18,4 @@ class Ccusto extends Model
     {
         return $this->hasMany('App\Item');
     }
-    
 }
